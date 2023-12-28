@@ -3,11 +3,11 @@
     "scripts": {
         "unit": "jest",
         "lint": "eslint '*.ts' --quiet --fix",
-        "compile": "tsc",
         "test": "npm run compile && npm run unit",
-        "sam:build": "sam build -p -c",
+        "sam:build": "sam build -p -c --manifest package.json",
         "sam:deploy": "sam deploy",
-        "sam:auto": "npm run sam:build && npm run sam:deploy"
+        "sam:auto": "npm run sam:build && npm run sam:deploy",
+        "sam:auto-guided": "npm run sam:build && sam deploy --guided"
     },
     "dependencies": {
         "@aws-sdk/client-apigatewaymanagementapi": "^3.481.0",

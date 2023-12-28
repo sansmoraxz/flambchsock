@@ -4,9 +4,13 @@
         "unit": "jest",
         "lint": "eslint '*.ts' --quiet --fix",
         "compile": "tsc",
-        "test": "npm run compile && npm run unit"
+        "test": "npm run compile && npm run unit",
+        "sam:build": "sam build -p -c",
+        "sam:deploy": "sam deploy",
+        "sam:auto": "npm run sam:build && npm run sam:deploy"
     },
     "dependencies": {
+        "@aws-sdk/client-apigatewaymanagementapi": "^3.481.0",
         "@aws-sdk/client-dynamodb": "^3.481.0",
         "@aws-sdk/lib-dynamodb": "^3.481.0",
         "esbuild": "^0.19.10"

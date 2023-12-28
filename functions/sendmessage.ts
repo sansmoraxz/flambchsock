@@ -40,7 +40,7 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
 
     const apigwManagementApi = new ApiGatewayManagementApi({
         apiVersion: '2018-11-29',
-        endpoint: event.requestContext.domainName + '/' + event.requestContext.stage,
+        endpoint: 'https://' + event.requestContext.domainName + '/' + event.requestContext.stage,
     });
 
     const postData = body?.data;
@@ -51,7 +51,10 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
 
     const postCalls = connectionData?.Items?.map(async ({ connectionId }) => {
         try {
-            await apigwManagementApi.postToConnection({ ConnectionId: connectionId, Data: 'Echo: hello' });
+            await apigwManagementApi.postToConnection({
+                ConnectionId: connectionId,
+                Data: event.requestContext.connectionId + ' says ::: ' + postData,
+            });
         } catch (e: any) {
             if (e.statusCode === 410) {
                 console.log(`Found stale connection, deleting ${connectionId}`);
@@ -70,8 +73,8 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
 
     try {
         await Promise.all(postCalls);
-    } catch (err) {
-        console.error('Failed to send data', err);
+    } catch (err: any) {
+        console.error('Failed to send data', err.stack);
         return { statusCode: 500, body: 'Failed to send data: ' + JSON.stringify(err) };
     }
 

@@ -30,7 +30,7 @@ Resources:
   OnConnectFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: functions/
+      CodeUri: src/functions/
       Handler: onconnect.handler
       Timeout: 5
       Policies:
@@ -48,7 +48,7 @@ Resources:
   OnDisconnectFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: functions/
+      CodeUri: src/functions/
       Handler: ondisconnect.handler
       Timeout: 5
       Policies:
@@ -66,7 +66,7 @@ Resources:
   SendMessageFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: functions/
+      CodeUri: src/functions/
       Handler: sendmessage.handler
       Timeout: 5
       Policies:

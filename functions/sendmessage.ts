@@ -23,10 +23,7 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
         body = JSON.parse(event.body || '');
     } catch (err) {
         console.error('Failed to parse body: ', err);
-        return {
-            statusCode: 500,
-            body: 'Failed to parse body: ' + JSON.stringify(err),
-        };
+        return { statusCode: 500, body: 'Failed to parse body: ' + JSON.stringify(err) };
     }
 
     let connectionData;
@@ -38,10 +35,7 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
         connectionData = await docClient.send(scanCommand);
     } catch (err) {
         console.error('Failed to connect to db: ', err);
-        return {
-            statusCode: 500,
-            body: 'Failed to connect to db: ' + JSON.stringify(err),
-        };
+        return { statusCode: 500, body: 'Failed to connect to db: ' + JSON.stringify(err) };
     }
 
     const apigwManagementApi = new ApiGatewayManagementApi({
@@ -52,24 +46,16 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
     const postData = body?.data;
 
     if (!postData) {
-        return {
-            statusCode: 500,
-            body: 'Data is required.',
-        };
+        return { statusCode: 500, body: 'Data is required.' };
     }
 
     const postCalls = connectionData?.Items?.map(async ({ connectionId }) => {
         try {
-            await apigwManagementApi.postToConnection({ ConnectionId: connectionId, Data: postData });
+            await apigwManagementApi.postToConnection({ ConnectionId: connectionId, Data: 'Echo: hello' });
         } catch (e: any) {
             if (e.statusCode === 410) {
                 console.log(`Found stale connection, deleting ${connectionId}`);
-                const deleteCommand = new DeleteCommand({
-                    TableName: TABLE_NAME,
-                    Key: {
-                        connectionId: connectionId,
-                    },
-                });
+                const deleteCommand = new DeleteCommand({ TableName: TABLE_NAME, Key: { connectionId: connectionId } });
                 await docClient.send(deleteCommand);
             } else {
                 throw e;
@@ -79,24 +65,15 @@ export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
 
     if (!postCalls) {
         console.error('No connections found.');
-        return {
-            statusCode: 500,
-            body: 'No connections found.',
-        };
+        return { statusCode: 500, body: 'No connections found.' };
     }
 
     try {
         await Promise.all(postCalls);
     } catch (err) {
         console.error('Failed to send data', err);
-        return {
-            statusCode: 500,
-            body: 'Failed to send data: ' + JSON.stringify(err),
-        };
+        return { statusCode: 500, body: 'Failed to send data: ' + JSON.stringify(err) };
     }
 
-    return {
-        statusCode: 200,
-        body: 'Data sent.',
-    };
+    return { statusCode: 200, body: 'Data sent.' };
 };

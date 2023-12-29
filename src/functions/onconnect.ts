@@ -1,21 +1,11 @@
 import { APIGatewayProxyWebsocketHandlerV2 } from 'aws-lambda';
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { PutCommand, DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 
-const client = new DynamoDBClient({});
-const docClient = DynamoDBDocumentClient.from(client);
-
-const { TABLE_NAME } = process.env;
+import { docClient } from '/config/clients';
+import { addWSConnection } from '/utils/manage_connection_table';
 
 export const handler: APIGatewayProxyWebsocketHandlerV2 = async (event) => {
     try {
-        const putCommand = new PutCommand({
-            TableName: TABLE_NAME,
-            Item: {
-                connectionId: event.requestContext.connectionId,
-            },
-        });
-        await docClient.send(putCommand);
+        await addWSConnection(docClient, event.requestContext.connectionId);
     } catch (err) {
         return {
             statusCode: 500,

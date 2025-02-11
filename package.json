@@ -13,7 +13,7 @@
         "@aws-sdk/client-apigatewaymanagementapi": "^3.481.0",
         "@aws-sdk/client-dynamodb": "^3.481.0",
         "@aws-sdk/lib-dynamodb": "^3.481.0",
-        "esbuild": "^0.19.10"
+        "esbuild": "^0.25.0"
     },
     "devDependencies": {
         "@types/aws-lambda": "^8.10.130",
